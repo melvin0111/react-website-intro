@@ -11,7 +11,7 @@ function Footer() {
                 JOIN THE ADVENTURE newsletter to receive our best vacation deals
             </p>
             <p className='footer-subscription-text'>
-                You can unsubscribe at any time.
+                Another Rah. You can unsubscribe at any time. Rah
             </p>
             <div className='input-areas'>
                 <form>
