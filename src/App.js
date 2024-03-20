@@ -8,7 +8,7 @@ import Products from './components/pages/Products';
 import SignUp from './components/pages/SignUp';
 import Footer from './components/Footer';
 import Login from './components/Login';
-
+import Dashboard from './components/pages/Dashboard';
 
 
 function App() {
@@ -22,6 +22,7 @@ function App() {
           <Route path='/products' exact element={<Products />}> </Route>
           <Route path='/sign-up' exact element={<SignUp />}> </Route>
           <Route path = '/' exact element={<Login />}></Route>
+          <Route path='/dashboard' exact element={<Dashboard /> }></Route>
       </Routes>
       <Footer/>
       </Router>
