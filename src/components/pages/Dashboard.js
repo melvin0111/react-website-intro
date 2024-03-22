@@ -1,10 +1,11 @@
 import React from 'react'
 import '../../App.css';
+import DashboardNav from '../DashboardNav';
 
 function Dashboard() {
   return (
     <div>
-      Welcome to the Dashboard!
+      <DashboardNav />
     </div>
   )
 }
