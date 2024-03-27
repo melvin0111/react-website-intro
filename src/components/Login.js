@@ -61,6 +61,7 @@ function Login() {
     console.log("Logging in with:", email, password);
     // Redirect to a specific route on successful login
     navigate('/dashboard');
+    
   };
 
   return (
