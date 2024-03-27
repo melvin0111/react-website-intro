@@ -2,7 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app import models
 from app.schemas import EventCreate
-
+#Testing Comment
 def create_event(db: Session, event: EventCreate):
     db_event = models.Event(**event.dict())
     db.add(db_event)
