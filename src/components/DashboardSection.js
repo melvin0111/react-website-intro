@@ -3,6 +3,8 @@ import '../App.css';
 import { Button } from './Button';
 import './DashboardSection.css';
 import Modal from './Modal';
+import { useNavigate } from 'react-router-dom'; 
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 
 
@@ -14,10 +16,14 @@ function DashboardSection(){
         { id: 2, name: 'Event Two', date: '2024-04-05', location: 'Venue B', ticketsSold: 150 },
         // ... more events
     ]);
-
+      // ... other useState hooks and functions
+    const navigate = useNavigate(); // Hook to navigate programmatically
 
     // State to control the visibility of the modal
     const [showModal, setShowModal] = useState(false);
+
+    const [currentEvent, setCurrentEvent] = useState(null); // state for the event being edited
+
 
     // Function to open the modal
     const handleOpenModal = () => setShowModal(true);
@@ -32,7 +38,72 @@ function DashboardSection(){
         // Close the modal after creating the event
         handleCloseModal();
     };
+
+      // Function to navigate to the Manage Tickets page
+  const handleManageTickets = (eventId) => {
+    // Navigate to the Manage Tickets page with the event ID
+    navigate(`/dashboard/tickets/${eventId}`);
+  };
+
+// old delete function
+    // const handleDeleteEvent = (eventId) => {
+    //     setMockEvents(mockEvents.filter(event => event.id !== eventId));
+    // };
+  // Function to delete an event
+  const handleDeleteEvent = (eventId) => {
+    // Filter out the event to delete
+    setMockEvents(mockEvents.filter(event => event.id !== eventId));
+    // Close any open options menu
+    setActiveEventOptions(null);
+  };
+
+    const handleEditEvent = (event) => {
+        setCurrentEvent(event); // Set the current event to be edited
+        setShowModal(true); // Open the modal for editing
+    };
+    //-------------------------------------------------------------------------(below is menu)
+  // State to manage which event's options are being displayed
+  const [activeEventOptions, setActiveEventOptions] = useState(null);
+
+  // Toggle the options display
+  const handleToggleOptions = (eventId) => {
+    if (activeEventOptions === eventId) {
+      // Clicking the same button should close the menu
+      setActiveEventOptions(null);
+    } else {
+      setActiveEventOptions(eventId);
+    }
+  };
+
+  // Close the options if clicked anywhere else on the page
+  const handlePageClick = () => {
+    setActiveEventOptions(null);
+  };
+
+  // Render the options for a specific event OLD ONE
+//   const renderEventOptions = (eventId) => {
+//     if (eventId !== activeEventOptions) return null;
     
+//     return (
+//       <div className="event-options">
+//         <button onClick={() => console.log("Manage tickets for", eventId)}>Manage Tickets</button>
+//         <button onClick={() => console.log("Edit", eventId)}>Edit</button>
+//         <button onClick={() => console.log("Delete", eventId)}>Delete</button>
+//       </div>
+//     );
+//   };
+
+const renderEventOptions = (eventId) => {
+    if (eventId !== activeEventOptions) return null;
+  
+    return (
+      <div className="event-options">
+        <button onClick={() => handleManageTickets(eventId)}>Manage Tickets</button>
+        <button onClick={() => handleEditEvent(eventId)}>Edit</button>
+        <button onClick={() => handleDeleteEvent(eventId)}>Delete</button>
+      </div>
+    );
+  };
 
 return (
     <div className="events-table-container">
@@ -84,6 +155,13 @@ return (
                     <td>{event.date}</td>
                     <td>{event.location}</td>
                     <td>{event.ticketsSold}</td>
+                    {/* <button onClick={() => handleEditEvent(event)}>Edit</button>
+                    <button onClick={() => handleDeleteEvent(event.id)}>Delete</button> */}
+                    <td> 
+                        <BsThreeDotsVertical onClick={() => handleToggleOptions(event.id)} />
+                        {renderEventOptions(event.id)}
+                </td>
+                            {/* You can replace these with icons or a menu */}
                     {/* ... other data cells */}
                 </tr>
             ))}
