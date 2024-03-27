@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, DateTime, JSON
 from sqlalchemy.sql import func 
 from sqlalchemy.dialects.postgresql import JSONB
 from app.database import Base
-
+#This is an API
 class Event(Base): 
     __tablename__ = "events"
 
