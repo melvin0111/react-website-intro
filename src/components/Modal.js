@@ -8,6 +8,7 @@ As such, it should be used sparingly—only when the app requires user input bef
 https://mui.com/base-ui/react-modal/
 We're making a popover
 */
+// Testing
 const Modal = ({ show, onClose, children }) => {
     // If 'show' is false, don't render the modal at all
     if (!show) {
