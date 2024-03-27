@@ -12,8 +12,8 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 
 function DashboardSection(){
     const [mockEvents, setMockEvents] = useState([
-        { id: 1, name: 'Event One', date: '2024-03-27', location: 'Venue A', ticketsSold: 100 },
-        { id: 2, name: 'Event Two', date: '2024-04-05', location: 'Venue B', ticketsSold: 150 },
+        { id: 1, name: 'Event One', start_date: '2024-03-27', end_date: '2024-03-28', location: 'Venue A' },
+        { id: 2, name: 'Event Two', start_date: '2024-04-05', end_date: '2024-04-06', location: 'Venue B'},
         // ... more events
     ]);
       // ... other useState hooks and functions
@@ -21,6 +21,9 @@ function DashboardSection(){
 
     // State to control the visibility of the modal
     const [showModal, setShowModal] = useState(false);
+
+
+
 
     const [currentEvent, setCurrentEvent] = useState(null); // state for the event being edited
 
@@ -80,18 +83,6 @@ function DashboardSection(){
     setActiveEventOptions(null);
   };
 
-  // Render the options for a specific event OLD ONE
-//   const renderEventOptions = (eventId) => {
-//     if (eventId !== activeEventOptions) return null;
-    
-//     return (
-//       <div className="event-options">
-//         <button onClick={() => console.log("Manage tickets for", eventId)}>Manage Tickets</button>
-//         <button onClick={() => console.log("Edit", eventId)}>Edit</button>
-//         <button onClick={() => console.log("Delete", eventId)}>Delete</button>
-//       </div>
-//     );
-//   };
 
 const renderEventOptions = (eventId) => {
     if (eventId !== activeEventOptions) return null;
@@ -105,70 +96,135 @@ const renderEventOptions = (eventId) => {
     );
   };
 
+
 return (
-    <div className="events-table-container">
+  <div className="events-table-container">
     <h1>Hello User!</h1>
-            <button onClick={handleOpenModal}>Create Event</button>
+    <button onClick={() => setShowModal(true)}>Create Event</button>
+    <Modal show={showModal} onClose={() => setShowModal(false)}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.target);
+        const newEvent = {
+          name: formData.get('name'),
+          start_date: formData.get('start_date'), // Get start date
+          end_date: formData.get('end_date'), // Get end date
+          location: formData.get('location'),
+        };
+        handleCreateEvent(newEvent);
+      }}>
+        <input type="text" name="name" placeholder="Event Name" required />
+        <input type="date" name="start_date" placeholder="Start Date" required />
+        <input type="date" name="end_date" placeholder="End Date" required />
+        <input type="text" name="location" placeholder="Location" required />
+        <button type="submit">Submit</button>
+      </form>
+    </Modal>
 
-            <Modal show={showModal} onClose={handleCloseModal}>
-                {/* The form is used to capture user input for creating a new event */}
-                <form onSubmit={(e) => {
-                    e.preventDefault(); // Prevents the default form submission behavior
-
-                    // Creates a FormData object to easily extract form values
-                    const formData = new FormData(e.target);
-
-                    // Constructs a new event object using values from the form
-                    const newEvent = {
-                        name: formData.get('name'), // Gets the 'name' input value
-                        date: formData.get('date'), // Gets the 'date' input value
-                        location: formData.get('location'), // Gets the 'location' input value
-                        ticketsSold: formData.get('ticketsSold') // Gets the 'ticketsSold' input value
-                    };
-
-                    // Calls handleCreateEvent with the new event object
-                    handleCreateEvent(newEvent);
-                }}>
-                    <input type="text" name="name" placeholder="Event Name" required />
-                    <input type="date" name="date" placeholder="Date" required />
-                    <input type="text" name="location" placeholder="Location" required />
-                    <input type="number" name="ticketsSold" placeholder="Tickets Sold" required />
-                    <button type="submit">Submit</button>
-                </form>
-            </Modal>
-
-    
     <table className="events-table">
-        <thead>
-            <tr>
-                <th>Event Name</th>
-                <th>Date</th>
-                <th>Location</th>
-                <th>Tickets Sold</th>
-                {/* ... other headers */}
-            </tr>
-        </thead>
-        <tbody>
-            {mockEvents.map((event) => (
-                <tr key={event.id}>
-                    <td>{event.name}</td>
-                    <td>{event.date}</td>
-                    <td>{event.location}</td>
-                    <td>{event.ticketsSold}</td>
-                    {/* <button onClick={() => handleEditEvent(event)}>Edit</button>
-                    <button onClick={() => handleDeleteEvent(event.id)}>Delete</button> */}
-                    <td> 
-                        <BsThreeDotsVertical onClick={() => handleToggleOptions(event.id)} />
-                        {renderEventOptions(event.id)}
-                </td>
-                            {/* You can replace these with icons or a menu */}
-                    {/* ... other data cells */}
-                </tr>
-            ))}
-        </tbody>
+      <thead>
+        <tr>
+          <th>Event Name</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Location</th>
+          <th>Tickets</th> {/* Changed from 'Tickets Sold' to 'Tickets' */}
+          {/* ... other headers */}
+        </tr>
+      </thead>
+      <tbody>
+        {mockEvents.map((event) => (
+          <tr key={event.id}>
+            <td>{event.name}</td>
+            <td>{event.start_date}</td>
+            <td>{event.end_date}</td>
+            <td>{event.location}</td>
+            <td>
+              {/* Button to manage tickets */}
+              <button onClick={() => navigate(`/dashboard/tickets/${event.id}`)}>Manage Tickets</button>
+              
+            </td>
+            <td>
+            <BsThreeDotsVertical onClick={() => handleToggleOptions(event.id)} />
+                      {renderEventOptions(event.id)}
+              {/* Three dots icon for more options */}
+            </td>
+          </tr>
+        ))}
+      </tbody>
     </table>
-</div>
-    );
+  </div>
+);
 }
-
 export default DashboardSection;
+
+
+// /*
+// return (
+//     <div className="events-table-container">
+//     <h1>Hello User!</h1>
+//             <button onClick={handleOpenModal}>Create Event</button>
+
+//             <Modal show={showModal} onClose={handleCloseModal}>
+//                 {/* The form is used to capture user input for creating a new event */}
+//                 <form onSubmit={(e) => {
+//                   e.preventDefault(); // Prevents the default form submission behavior
+
+//                   // Creates a FormData object to easily extract form values
+//                   const formData = new FormData(e.target);
+
+//                   // Constructs a new event object using values from the form
+//                   const newEvent = {
+//                       name: formData.get('name'), // Gets the 'name' input value
+//                       // date: formData.get('date'), // Gets the 'date' input value
+//                       start_date: formData.get('start_date'),
+//                       end_date: formData.get('start_date'),
+//                       location: formData.get('location'), // Gets the 'location' input value
+//                   };
+
+//                   // Calls handleCreateEvent with the new event object
+//                   handleCreateEvent(newEvent);
+//               }}>
+//                   <input type="text" name="name" placeholder="Event Name" required />
+//                   <input type="date" name="date" placeholder="Date" required />
+//                   <input type="date" name="date" placeholder="Date" required />
+//                   <input type="text" name="location" placeholder="Location" required />
+//                   <button type="submit">Submit</button>
+//               </form>
+//           </Modal>
+
+  
+//   <table className="events-table">
+//       <thead>
+//           <tr>
+//               <th>Event Name</th>
+//               <th>Date</th>
+//               <th>Location</th>
+//               <th>Tickets Sold</th>
+//               {/* ... other headers */}
+//           </tr>
+//       </thead>
+//       <tbody>
+//           {mockEvents.map((event) => (
+//               <tr key={event.id}>
+//                   <td>{event.name}</td>
+//                   <td>{event.date}</td>
+//                   <td>{event.date}</td>
+//                   <td>{event.location}</td>
+//                   <td>{event.ticketsSold}</td>
+//                   {/* <button onClick={() => handleEditEvent(event)}>Edit</button>
+//                   <button onClick={() => handleDeleteEvent(event.id)}>Delete</button> */}
+//                   <td> 
+//                       <BsThreeDotsVertical onClick={() => handleToggleOptions(event.id)} />
+//                       {renderEventOptions(event.id)}
+//               </td>
+//                           {/* You can replace these with icons or a menu */}
+//                   {/* ... other data cells */}
+//               </tr>
+//           ))}
+//       </tbody>
+//   </table>
+// </div>
+//   );
+// }
+// */
