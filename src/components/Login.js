@@ -48,7 +48,8 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css';
+import './Login.css'; 
+import './signUp2.css'; 
 
 function Login() {
   const navigate = useNavigate();
@@ -60,9 +61,13 @@ function Login() {
     // For now, we're assuming any login attempt is successful
     console.log("Logging in with:", email, password);
     // Redirect to a specific route on successful login
-    navigate('/dashboard');
-    
-  };
+    navigate('/Dashboard'); 
+  }; 
+
+  const handleSignUp = () => {
+    console.log("Redirecting to sign up page..."); 
+    navigate('/signUp'); 
+  } 
 
   return (
     <div className='flex-container'>
@@ -79,7 +84,7 @@ function Login() {
           />
         </div>
         <div className='form-group'>
-          <label  htmlFor='password'>Password</label>
+          <label htmlFor='password'>Password</label>
           <input
             type='password'
             placeholder='Enter Password'
@@ -91,18 +96,18 @@ function Login() {
         <div className='form-group'>
           <input type='checkbox' id='remember-me' />
           <label htmlFor='remember-me'>Remember Me</label>
-        </div>
+        </div> 
         <button type='submit' className='btn-primary'>
-          Sign In
+          Sign In 
         </button>
-        <button type='submit' className='btn-primary'>
-          Sign Up
+        <button type='button' className='btn-primary' onClick={handleSignUp}>
+          Sign Up 
         </button>
       </form>
     </div>
-  
   );
-}
+};
 
-export default Login;
+
+export default Login; 
 

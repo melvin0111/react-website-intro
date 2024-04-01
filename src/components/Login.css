@@ -9,9 +9,6 @@
     background-position: center; /* Centers the background image */
     background-repeat: no-repeat; /* Prevents the image from repeating */
   }
-
-  
-  
   
   /* Add more styles as needed    ------------------------------------------------------------------*/
   /* Container for the form, if you're using flexbox for layout */
@@ -52,6 +49,7 @@
   outline: 0;
   
 }
+
 .modal-form h2 {
   color: #333; /* Change the color as needed */
   font-size: 50px; /* Increase font size */
@@ -59,6 +57,7 @@
   font-weight: bold; /* Make the title bold */
   /* Add other styles like font-family if you want to change the font */
 }
+
 .modal-form label {
   color: #333;
   font-size: 20px; 

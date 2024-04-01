@@ -45,7 +45,8 @@ import Login from './components/Login';
 import Dashboard from './components/pages/Dashboard';
 import Orders from './components/pages/Orders';
 import Settings from './components/pages/Settings';
-import Tickets from './components/pages/Tickets';
+import Tickets from './components/pages/Tickets'; 
+import signUpLegit from './components/pages/signUpLegit';
 // import DashboardHome from './components/pages/DashboardHome';
 // import DashboardOrders from './components/pages/DashboardOrders';
 // import DashboardSettings from './components/pages/DashboardSettings';
@@ -65,6 +66,8 @@ function App() {
         <Route path ='/dashboard/Orders' element = {<> <Orders /> </> } />
         <Route path ='/dashboard/Settings' element = {<> <Settings /> </> } />
         <Route path='/dashboard/Tickets' element={<Tickets />} />
+
+        <Route path = '/signUp' element = {<signUpLegit />} /> 
 
           {/* <Route index element={<DashboardHome />} />
           <Route path='orders' element={<DashboardOrders />} />
