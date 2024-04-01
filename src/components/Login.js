@@ -49,7 +49,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; 
-import './signUp2.css'; 
+import './SignUp2.css'; 
 
 function Login() {
   const navigate = useNavigate();

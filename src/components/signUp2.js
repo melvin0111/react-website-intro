@@ -1,14 +1,18 @@
-import React from 'react' 
+import React, { useState } from 'react' 
 import { useNavigate } from 'react-router-dom' 
 import './signUp2.css'; 
-import '../../App.css';
 import './Login.css'; 
 
-function signUp2() {
+function SignUp2() {
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const handleSignUp = () => {
+    console.log("Redirecting to sign up page..."); 
+    navigate('/SignUp'); 
+  } 
 
   const SignUpFn = (e) => {
     e.preventDefault();
@@ -57,4 +61,4 @@ function signUp2() {
   );
 }; 
 
-export default signUp2; 
+export default SignUp2; 
