@@ -1,11 +1,13 @@
 import React from 'react'
+import '../../App.css';
+import SignUp2 from '../SignUp2'
 
-function signUpLegit() {
+function SignUpLegit() {
   return (
-    <div> 
-        <signUp2/> 
-    </div>
-  )
+    <>
+        <SignUp2 /> 
+    </>
+  );
 }
 
-export default signUpLegit
+export default signUpLegit;
