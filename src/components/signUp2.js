@@ -1,6 +1,7 @@
 import React from 'react' 
 import { useNavigate } from 'react-router-dom' 
 import './signUp2.css'; 
+import '../../App.css';
 import './Login.css'; 
 
 function signUp2() {

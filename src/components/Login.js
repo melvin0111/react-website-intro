@@ -66,7 +66,7 @@ function Login() {
 
   const handleSignUp = () => {
     console.log("Redirecting to sign up page..."); 
-    navigate('/signUp'); 
+    navigate('/signUp2'); 
   } 
 
   return (
