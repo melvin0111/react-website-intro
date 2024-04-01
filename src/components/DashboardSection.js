@@ -22,11 +22,9 @@ function DashboardSection(){
     // State to control the visibility of the modal
     const [showModal, setShowModal] = useState(false);
 
-
-
+    const [ticketsData, setTicketsData] = useState({});
 
     const [currentEvent, setCurrentEvent] = useState(null); // state for the event being edited
-
 
     // Function to open the modal
     const handleOpenModal = () => setShowModal(true);
@@ -42,17 +40,20 @@ function DashboardSection(){
         handleCloseModal();
     };
 
-      // Function to navigate to the Manage Tickets page
-  const handleManageTickets = (eventId) => {
-    // Navigate to the Manage Tickets page with the event ID
-    navigate(`/dashboard/tickets/${eventId}`);
+    const handleManageTicketsSubmit = (eventId, ticketInfo) => {
+      const updatedTicketsData = {
+          ...ticketsData,
+          [eventId]: [...(ticketsData[eventId] || []), ticketInfo] // Append new ticket info to the array
+      };
+      setTicketsData(updatedTicketsData); // Update state
+      setShowModal(false); // Close modal
   };
+  
+  const openManageTicketsModal = (eventId) => {
+    // Additional logic (if needed)
+    setShowModal(true);
+};
 
-// old delete function
-    // const handleDeleteEvent = (eventId) => {
-    //     setMockEvents(mockEvents.filter(event => event.id !== eventId));
-    // };
-  // Function to delete an event
   const handleDeleteEvent = (eventId) => {
     // Filter out the event to delete
     setMockEvents(mockEvents.filter(event => event.id !== eventId));
@@ -89,7 +90,6 @@ const renderEventOptions = (eventId) => {
   
     return (
       <div className="event-options">
-        <button onClick={() => handleManageTickets(eventId)}>Manage Tickets</button>
         <button onClick={() => handleEditEvent(eventId)}>Edit</button>
         <button onClick={() => handleDeleteEvent(eventId)}>Delete</button>
       </div>
@@ -141,8 +141,46 @@ return (
             <td>{event.location}</td>
             <td>
               {/* Button to manage tickets */}
-              <button onClick={() => navigate(`/dashboard/tickets/${event.id}`)}>Manage Tickets</button>
-              
+              <button onClick={() => setShowModal(true)}>Manage Tickets</button>
+              {/* <Modal show={showModal} onClose={() => setShowModal(false)}>
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target);
+                  const ticketInfo = {
+                    ticketType: formData.get('ticketType'),
+                    price: formData.get('price'),
+                    quantity: formData.get('quantity'),
+                    description: formData.get('description')
+                };            
+                }}>
+                  <input type="text" name="ticketType" placeholder="Ticket Type" required />
+                  <input type="number" name="price" placeholder="Price" required />
+                  <input type="number" name="quantity" placeholder="Quantity" required />
+                  <textarea name="description" placeholder="Description" />
+                  <button type="submit">Submit</button>
+                </form>
+              </Modal> */}
+              <Modal show={showModal} onClose={() => setShowModal(false)}>
+            {/* Your existing form for creating events */}
+            {/* New form for managing tickets */}
+                <form onSubmit={(e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const ticketInfo = {
+                        ticketType: formData.get('ticketType'),
+                        price: formData.get('price'),
+                        quantity: formData.get('quantity'),
+                        description: formData.get('description')
+                    };
+                    handleManageTicketsSubmit(currentEvent, ticketInfo);
+                }}>
+                    <input type="text" name="ticketType" placeholder="Ticket Type" required />
+                    <input type="number" name="price" placeholder="Price" required />
+                    <input type="number" name="quantity" placeholder="Quantity" required />
+                    <textarea name="description" placeholder="Description" />
+                    <button type="submit">Submit</button>
+                </form>
+            </Modal>
             </td>
             <td>
             <BsThreeDotsVertical onClick={() => handleToggleOptions(event.id)} />
