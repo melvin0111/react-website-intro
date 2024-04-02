@@ -17,8 +17,12 @@ class User(db.Model):
 
     def json(self):
         return {'id': self.id,'username': self.username, 'email': self.email}
+    
+@app.before_first_request
+def initialize_database():
+    db.create_all()
 
-db.create_all()
+
 
 #create a test route
 @app.route('/test', methods=['GET'])
@@ -35,7 +39,7 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
     return make_response(jsonify({'message': 'user created'}), 201)
-  except e:
+  except:
     return make_response(jsonify({'message': 'error creating user'}), 500)
 
 # get all users
@@ -44,7 +48,7 @@ def get_users():
   try:
     users = User.query.all()
     return make_response(jsonify([user.json() for user in users]), 200)
-  except e:
+  except:
     return make_response(jsonify({'message': 'error getting users'}), 500)
 
 # get a user by id
@@ -55,7 +59,7 @@ def get_user(id):
     if user:
       return make_response(jsonify({'user': user.json()}), 200)
     return make_response(jsonify({'message': 'user not found'}), 404)
-  except e:
+  except:
     return make_response(jsonify({'message': 'error getting user'}), 500)
 
 # update a user
@@ -70,7 +74,7 @@ def update_user(id):
       db.session.commit()
       return make_response(jsonify({'message': 'user updated'}), 200)
     return make_response(jsonify({'message': 'user not found'}), 404)
-  except e:
+  except:
     return make_response(jsonify({'message': 'error updating user'}), 500)
 
 # delete a user
@@ -83,5 +87,8 @@ def delete_user(id):
       db.session.commit()
       return make_response(jsonify({'message': 'user deleted'}), 200)
     return make_response(jsonify({'message': 'user not found'}), 404)
-  except e:
+  except:
     return make_response(jsonify({'message': 'error deleting user'}), 500)
+  
+if __name__ == '__main__': 
+  app.run(host = '0.0.0.0', port = 4000)
