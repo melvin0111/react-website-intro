@@ -365,7 +365,7 @@ def delete_expense_category(id):
 
 
 class Expense(db.Model):
-    __tablename__ = 'expense'
+    __tablename__ = 'expenses'
 
     expense_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'expense_id'
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
