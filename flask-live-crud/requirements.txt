@@ -1,3 +1,4 @@
 flask 
-pyscopg2 - binary 
-Flask - SQLAlchemy
+PyMySQL
+Flask-SQLAlchemy
+cryptography

@@ -6,22 +6,21 @@ services:
     image: dockerhub-flask_live_app:1.0.0
     build: .
     ports:
-      - "4000:4000"
+      - "5000:5000"
     environment:
-      - DB_URL=postgresql://postgres:postgres@flask_db:5432/postgres
+      - DB_URL=mysql://root:Taft#2021@flask_db:3306/Event_management_system
     depends_on:
       - flask_db
   flask_db:
     container_name: flask_db
-    image: postgres:12
+    image: mysql:8
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+      - MYSQL_ROOT_PASSWORD=Taft#2021
+      - MYSQL_DATABASE=Event_management_system
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
 
 volumes:
-  pgdata: {}
+  mysqldata: {}
