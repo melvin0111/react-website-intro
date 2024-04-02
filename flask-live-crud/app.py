@@ -104,7 +104,7 @@ def delete_user(user_id):
 class Event(db.Model):
     __tablename__ = 'events'
 
-    id = db.Column(db.Integer, primary_key=True)
+    event_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'event_id'
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=False)
     start_date = db.Column(db.TIMESTAMP, nullable=False)
@@ -176,9 +176,9 @@ def delete_event(id):
 class Ticket(db.Model):
     __tablename__ = 'tickets'
 
-    id = db.Column(db.Integer, primary_key=True)
+    ticket_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'ticket_id'
     description = db.Column(db.String(255))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)  # Make sure this matches the 'event_id' in the 'events' table
     ticket_type = db.Column(db.String(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
@@ -244,7 +244,7 @@ def delete_ticket(id):
 class Order(db.Model):
     __tablename__ = 'orders'
 
-    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'order_id'
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
     ticket_id = db.Column(db.Integer, db.ForeignKey('tickets.ticket_id'), nullable=False)
@@ -312,7 +312,7 @@ def delete_order(id):
 class ExpenseCategory(db.Model):
     __tablename__ = 'expense_categories'
 
-    id = db.Column(db.Integer, primary_key=True)
+    exp_categ_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'exp_categ_id'
     name = db.Column(db.String(255), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, default=db.func.current_timestamp())
@@ -368,7 +368,7 @@ def delete_expense_category(id):
 class Expense(db.Model):
     __tablename__ = 'expense'
 
-    id = db.Column(db.Integer, primary_key=True)
+    expense_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'expense_id'
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
     category_id = db.Column(db.Integer, db.ForeignKey('expense_categories.exp_categ_id'), nullable=False)
     description = db.Column(db.String(255), nullable=False)
@@ -440,7 +440,7 @@ def delete_expense(id):
 class Salary(db.Model):
     __tablename__ = 'salaries'
 
-    id = db.Column(db.Integer, primary_key=True)
+    salary_id = db.Column(db.Integer, primary_key=True)  # Renamed from 'id' to 'salary_id'
     event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     hourly_rate = db.Column(db.Numeric(10, 2), nullable=False)
