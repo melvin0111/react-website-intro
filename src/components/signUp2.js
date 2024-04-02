@@ -1,31 +1,32 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './Login.css'; 
+import React, { useState } from 'react' 
+import { useNavigate } from 'react-router-dom' 
 import './SignUp2.css'; 
+import './Login.css'; 
 
-function Login() {
+function SignUp2() {
+
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSignUp = () => {
+    console.log("Redirecting to sign up page..."); 
+    navigate('/SignUp'); 
+  } 
+
+  const SignUpFn = (e) => {
     e.preventDefault();
     // For now, we're assuming any login attempt is successful
-    console.log("Logging in with:", email, password);
+    console.log("Signing up with:", email, password);
     // Redirect to a specific route on successful login
     navigate('/Dashboard'); 
   }; 
 
-  const handleSignUp = () => {
-    console.log("Redirecting to sign up page..."); 
-    navigate('/signUp'); 
-  } 
-
   return (
-    <div className='flex-container'>
-      <form className='modal-form' onSubmit={handleSubmit}>
+    <div className='flex-container2'>
+      <form className='modal-form2' onSubmit={SignUpFn}>
         <h2>Log In</h2>
-        <div className='form-group'>
+        <div className='form-group2'>
           <label htmlFor='email'>Email</label>
           <input
             type='email'
@@ -35,7 +36,7 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div className='form-group'>
+        <div className='form-group2'>
           <label htmlFor='password'>Password</label>
           <input
             type='password'
@@ -45,7 +46,7 @@ function Login() {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <div className='form-group'>
+        <div className='form-group2'>
           <input type='checkbox' id='remember-me' />
           <label htmlFor='remember-me'>Remember Me</label>
         </div> 
@@ -58,8 +59,6 @@ function Login() {
       </form>
     </div>
   );
-};
+}; 
 
-
-export default Login; 
-
+export default SignUp2; 

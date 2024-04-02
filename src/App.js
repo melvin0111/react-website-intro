@@ -45,7 +45,9 @@ import Login from './components/Login';
 import Dashboard from './components/pages/Dashboard';
 import Orders from './components/pages/Orders';
 import Settings from './components/pages/Settings';
-import Tickets from './components/pages/Tickets';
+import Tickets from './components/pages/Tickets'; 
+import SignUp2 from './components/SignUp2';
+
 // import DashboardHome from './components/pages/DashboardHome';
 // import DashboardOrders from './components/pages/DashboardOrders';
 // import DashboardSettings from './components/pages/DashboardSettings';
@@ -59,12 +61,14 @@ function App() {
         <Route path='/products' element={<><NavBar /><Products /><Footer /></>} />
         <Route path='/sign-up' element={<><NavBar /><SignUp /><Footer /></>} />
         <Route path='/login' element={<><NavBar /><Login /><Footer /></>} />
+        <Route path = '/signUp' element = {<><NavBar /><SignUp2 /><Footer /></>} /> 
 
         {/* Dashboard route does not include NavBar or Footer */}
         <Route path='/dashboard' element={<Dashboard />} />
         <Route path ='/dashboard/Orders' element = {<> <Orders /> </> } />
         <Route path ='/dashboard/Settings' element = {<> <Settings /> </> } />
         <Route path='/dashboard/Tickets' element={<Tickets />} />
+
 
           {/* <Route index element={<DashboardHome />} />
           <Route path='orders' element={<DashboardOrders />} />
