@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from os import environ 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Taft#2021@flask_db:3306/sailing_club_database'
 
 db = SQLAlchemy(app)
 
