@@ -8,7 +8,7 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - DB_URL=mysql://root:Taft#2021@flask_db:3306/sailing_club_database
+      - DB_URL=mysql://root:Taft#2021@flask_db:3306/Event_management_system
     depends_on:
       - flask_db
   flask_db:
@@ -18,7 +18,7 @@ services:
       - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=Taft#2021
-      - MYSQL_DATABASE=sailing_club_database
+      - MYSQL_DATABASE=Event_management_system
     volumes:
       - mysqldata:/var/lib/mysql
 
