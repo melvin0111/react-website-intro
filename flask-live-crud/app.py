@@ -17,7 +17,6 @@ class User(db.Model):
     email = db.Column(db.String(255), unique=True, nullable=False)
     phone_number = db.Column(db.String(20), nullable=True)  # nullable=True if the phone number is optional
     role = db.Column(db.String(255), nullable=False)
-    created_by = db.Column(db.Integer, nullable=True)  # nullable=True if created_by is optional
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     updated_at = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
@@ -29,11 +28,11 @@ class User(db.Model):
             'email': self.email,
             'phone_number': self.phone_number,
             'role': self.role,
-            'created_by': self.created_by,
             'password': self.password,  # Consider omitting in real app for security
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+
     
 #@app.before_first_request
 #def initialize_database():
