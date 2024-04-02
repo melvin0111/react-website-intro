@@ -35,9 +35,9 @@ class User(db.Model):
             'updated_at': self.updated_at
         }
     
-@app.before_first_request
-def initialize_database():
-    db.create_all()
+#@app.before_first_request
+#def initialize_database():
+    #db.create_all()
 
 
 
