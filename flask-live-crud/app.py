@@ -113,6 +113,9 @@ class Event(db.Model):
     organizer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     capacity = db.Column(db.Integer, nullable=False)
 
+    organizer_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)  # Updated reference
+
+
     def json(self):
         return {
             'id': self.id,
