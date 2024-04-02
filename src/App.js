@@ -46,7 +46,7 @@ import Dashboard from './components/pages/Dashboard';
 import Orders from './components/pages/Orders';
 import Settings from './components/pages/Settings';
 import Tickets from './components/pages/Tickets'; 
-import SignUp2 from './components/SignUp2';
+import SignUp2 from './components/SignUp2'; 
 
 // import DashboardHome from './components/pages/DashboardHome';
 // import DashboardOrders from './components/pages/DashboardOrders';

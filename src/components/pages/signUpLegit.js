@@ -10,4 +10,4 @@ function SignUpLegit() {
   );
 }
 
-export default signUpLegit;
+export default SignUpLegit;
