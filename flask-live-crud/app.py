@@ -379,7 +379,7 @@ class Expense(db.Model):
 
     def json(self):
         return {
-            'id': self.id,
+            'expense_id': self.id,
             'event_id': self.event_id,
             'category_id': self.category_id,
             'description': self.description,
