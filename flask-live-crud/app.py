@@ -110,11 +110,8 @@ class Event(db.Model):
     start_date = db.Column(db.TIMESTAMP, nullable=False)
     end_date = db.Column(db.TIMESTAMP, nullable=False)
     location = db.Column(db.JSON, nullable=False)
-    organizer_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    capacity = db.Column(db.Integer, nullable=False)
-
     organizer_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)  # Updated reference
-
+    capacity = db.Column(db.Integer, nullable=False)
 
     def json(self):
         return {
@@ -181,7 +178,7 @@ class Ticket(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     description = db.Column(db.String(255))
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
     ticket_type = db.Column(db.String(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Numeric(10, 2), nullable=False)
@@ -248,9 +245,9 @@ class Order(db.Model):
     __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    ticket_id = db.Column(db.Integer, db.ForeignKey('tickets.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
+    ticket_id = db.Column(db.Integer, db.ForeignKey('tickets.ticket_id'), nullable=False)
     total_amount = db.Column(db.Numeric(10, 2), nullable=False)
     status = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, default=db.func.current_timestamp())
@@ -372,8 +369,8 @@ class Expense(db.Model):
     __tablename__ = 'expense'
 
     id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
-    category_id = db.Column(db.Integer, db.ForeignKey('expense_categories.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
+    category_id = db.Column(db.Integer, db.ForeignKey('expense_categories.exp_categ_id'), nullable=False)
     description = db.Column(db.String(255), nullable=False)
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     paid_at = db.Column(db.TIMESTAMP)
@@ -444,7 +441,7 @@ class Salary(db.Model):
     __tablename__ = 'salaries'
 
     id = db.Column(db.Integer, primary_key=True)
-    event_id = db.Column(db.Integer, db.ForeignKey('events.id'), nullable=False)
+    event_id = db.Column(db.Integer, db.ForeignKey('events.event_id'), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     hourly_rate = db.Column(db.Numeric(10, 2), nullable=False)
     total_amount = db.Column(db.Numeric(10, 2), nullable=False)
