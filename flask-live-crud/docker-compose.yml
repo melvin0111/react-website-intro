@@ -8,20 +8,19 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - DB_URL=postgresql://postgres:postgres@flask_db:5432/postgres
+      - DB_URL=mysql://root:Taft#2021@flask_db:3306/sailing_club_database
     depends_on:
       - flask_db
   flask_db:
     container_name: flask_db
-    image: postgres:12
+    image: mysql:8
     ports:
-      - "5432:5432"
+      - "3306:3306"
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_DB=postgres
+      - MYSQL_ROOT_PASSWORD=Taft#2021
+      - MYSQL_DATABASE=sailing_club_database
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - mysqldata:/var/lib/mysql
 
 volumes:
-  pgdata: {}
+  mysqldata: {}
