@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
-from os import environ 
+from os import environ
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:Taft#2021@flask_db:3306/sailing_club_database'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
+
 
 class User(db.Model):
     __tablename__ = 'users'
@@ -14,13 +15,12 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(255), unique=True, nullable=False)
     email = db.Column(db.String(255), unique=True, nullable=False)
-    phone_number = db.Column(db.String(20))
+    phone_number = db.Column(db.String(20), nullable=True)  # nullable=True if the phone number is optional
     role = db.Column(db.String(255), nullable=False)
-    created_by = db.Column(db.Integer)
+    created_by = db.Column(db.Integer, nullable=True)  # nullable=True if created_by is optional
     password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp())
     updated_at = db.Column(db.TIMESTAMP, server_default=db.func.current_timestamp(), onupdate=db.func.current_timestamp())
-
 
     def json(self):
         return {
@@ -506,4 +506,4 @@ def delete_salary(id):
 
 
 if __name__ == '__main__': 
-  app.run(host = '0.0.0.0', port = 4000)
+  app.run(host = '0.0.0.0', port = 5000)
