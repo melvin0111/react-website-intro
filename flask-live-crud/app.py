@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
+from werkzeug.exceptions import HTTPException 
 from os import environ
 
 app = Flask(__name__)
@@ -32,6 +34,16 @@ class User(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+    
+@app.errorhandler(Exception)
+def handle_exception(e): 
+    if isinstance(e, HTTPException): 
+        return e
+    return jsonify(error = str(e)), 500
+@app.errorhandler(HTTPException)
+def handle_http_exception(e): 
+    return jsonify(error = str(e.description)), e.code
+
 
     
 @app.before_first_request
@@ -505,4 +517,4 @@ def delete_salary(id):
 
 
 if __name__ == '__main__': 
-  app.run(host = '0.0.0.0', port = 5000)
+  app.run(host = '0.0.0.0', port = 5000, debug = True)
