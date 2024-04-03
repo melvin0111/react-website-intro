@@ -58,21 +58,31 @@ def test():
   return make_response(jsonify({'message': 'test route'}), 200)
 
 
-# create a user
+# Create a user
 @app.route('/users', methods=['POST'])
 def create_user():
-    data = request.get_json()
-    new_user = User(
-        username=data['username'],
-        email=data['email'],
-        phone_number=data.get('phone_number', None),  # Optional
-        role=data['role'],
-        created_by=data.get('created_by'),  # Assuming this is optional
-        password=data['password']
-    )
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify(new_user.json()), 201
+    try:
+        data = request.get_json()
+        if not all(key in data for key in ('username', 'email', 'role', 'password')):
+            abort(400, description="Missing required user fields: username, email, role, password")
+
+        new_user = User(
+            username=data['username'],
+            email=data['email'],
+            phone_number=data.get('phone_number'),
+            role=data['role'],
+            password=data['password']
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify(new_user.json()), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+    except KeyError as e:
+        return jsonify(error=f"Missing data for required field: {e}"), 400
+
 
 
 # get all users
