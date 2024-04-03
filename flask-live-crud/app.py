@@ -34,9 +34,9 @@ class User(db.Model):
         }
 
     
-#@app.before_first_request
-#def initialize_database():
-    #db.create_all()
+@app.before_first_request
+def initialize_database():
+    db.create_all()
 
 
 
