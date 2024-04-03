@@ -53,7 +53,7 @@ def create_user():
     new_user = User(
         username=data['username'],
         email=data['email'],
-        phone_number=data.get('phone_number'),  # Optional
+        phone_number=data.get('phone_number', None),  # Optional
         role=data['role'],
         created_by=data.get('created_by'),  # Assuming this is optional
         password=data['password']
