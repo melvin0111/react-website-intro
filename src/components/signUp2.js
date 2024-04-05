@@ -73,11 +73,8 @@ function SignUp2() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const handleSignUp = () => {
-    console.log("Redirecting to sign up page..."); 
-    navigate('/SignUp'); 
-  } 
+  const [username, setUsername] = useState(''); 
+  const [contactInfo, setContactInfo] = useState(''); 
 
   const SignUpFn = (e) => {
     e.preventDefault();
@@ -90,7 +87,17 @@ function SignUp2() {
   return (
     <div className='flex-container2'>
       <form className='modal-form2' onSubmit={SignUpFn}>
-        <h2>Log In</h2>
+        <h2>Sign Up</h2> 
+        <div className='form-group2'>
+          <label htmlFor='username'>Username</label>
+          <input
+            type='username'
+            placeholder='Enter Username'
+            id='username'
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
         <div className='form-group2'>
           <label htmlFor='email'>Email</label>
           <input
@@ -102,7 +109,7 @@ function SignUp2() {
           />
         </div>
         <div className='form-group2'>
-          <label htmlFor='password'>Password</label>
+          <label htmlFor='password'>Set Password</label>
           <input
             type='password'
             placeholder='Enter Password'
@@ -110,15 +117,18 @@ function SignUp2() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-        </div>
-        <div className='form-group2'>
-          <input type='checkbox' id='remember-me' />
-          <label htmlFor='remember-me'>Remember Me</label>
         </div> 
+        <div className='form-group2'>
+          <label htmlFor='contactInfo'>Contact Info</label>
+          <input
+            type='contactInfo'
+            placeholder='Enter Contact Info'
+            id='contactInfo'
+            value={contactInfo}
+            onChange={(e) => setContactInfo(e.target.value)}
+          />
+        </div>
         <button type='submit' className='btn-primary'>
-          Sign In 
-        </button>
-        <button type='button' className='btn-primary' onClick={handleSignUp}>
           Sign Up 
         </button>
       </form>

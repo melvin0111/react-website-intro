@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import './NavBar.css';
 import { Button } from './Button';
@@ -11,6 +12,8 @@ function NavBar() {
 
   const closeMobileMenu = () => setClick(false);
 
+  const navigate = useNavigate(); 
+
   const showButton = () => {
     if(window.innerWidth <= 960) {
       setButton(false);
@@ -18,6 +21,11 @@ function NavBar() {
       setButton(true);
     }
   };
+
+  const handleSignUp = () => {
+    console.log("Redirecting to sign up page..."); 
+    navigate('/signUp'); 
+  } 
 
   useEffect (() => {
     showButton()
@@ -52,7 +60,7 @@ function NavBar() {
                 </Link>
               </li>
               <li className='nav-item'>
-                <Link to='/sign-up' className='nav-links-mobile' onClick={closeMobileMenu}>
+                <Link to='/sign-up' className='nav-links-mobile' onClick={handleSignUp}>
                   Sign Up
                 </Link>
               </li>

@@ -63,7 +63,9 @@
   
   
   .modal-form2 input[type='email'],
-  .modal-form2 input[type='password'] {
+  .modal-form2 input[type='password'],  
+  .modal-form2 input[type='username'], 
+  .modal-form2 input[type='contactInfo'] {
     color: #333; /* Text color */
     font-size: 16px; /* Smaller font size if necessary */
     border: 1px solid #ccc; /* Border color and width */
@@ -79,7 +81,9 @@
   
   
   .modal-form2 input[type='email']::placeholder,
-  .modal-form2 input[type='password']::placeholder {
+  .modal-form2 input[type='password']::placeholder, 
+  .modal-form2 input[type='username']::placeholder, 
+  .modal-form2 input[type='contactInfo']::placeholder {
     color: #888; /* Change the placeholder text color */
     /* You can add more styles for the placeholder text if necessary */
     border: 0px solid #1E0A3C;
