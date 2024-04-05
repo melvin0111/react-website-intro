@@ -1,5 +1,7 @@
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, abort
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.exc import SQLAlchemyError
+from werkzeug.exceptions import HTTPException 
 from os import environ
 
 app = Flask(__name__)
@@ -32,11 +34,21 @@ class User(db.Model):
             'created_at': self.created_at,
             'updated_at': self.updated_at
         }
+    
+@app.errorhandler(Exception)
+def handle_exception(e): 
+    if isinstance(e, HTTPException): 
+        return e
+    return jsonify(error = str(e)), 500
+@app.errorhandler(HTTPException)
+def handle_http_exception(e): 
+    return jsonify(error = str(e.description)), e.code
+
 
     
-#@app.before_first_request
-#def initialize_database():
-    #db.create_all()
+@app.before_first_request
+def initialize_database():
+    db.create_all()
 
 
 
@@ -46,21 +58,31 @@ def test():
   return make_response(jsonify({'message': 'test route'}), 200)
 
 
-# create a user
+# Create a user
 @app.route('/users', methods=['POST'])
 def create_user():
-    data = request.get_json()
-    new_user = User(
-        username=data['username'],
-        email=data['email'],
-        phone_number=data.get('phone_number'),  # Optional
-        role=data['role'],
-        created_by=data.get('created_by'),  # Assuming this is optional
-        password=data['password']
-    )
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify(new_user.json()), 201
+    try:
+        data = request.get_json()
+        if not all(key in data for key in ('username', 'email', 'role', 'password')):
+            abort(400, description="Missing required user fields: username, email, role, password")
+
+        new_user = User(
+            username=data['username'],
+            email=data['email'],
+            phone_number=data.get('phone_number'),
+            role=data['role'],
+            password=data['password']
+        )
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify(new_user.json()), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+    except KeyError as e:
+        return jsonify(error=f"Missing data for required field: {e}"), 400
+
 
 
 # get all users
@@ -109,7 +131,7 @@ class Event(db.Model):
     start_date = db.Column(db.TIMESTAMP, nullable=False)
     end_date = db.Column(db.TIMESTAMP, nullable=False)
     location = db.Column(db.JSON, nullable=False)
-    organizer_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)  # Updated reference
+    organizer_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)  # Updated reference foreign key for users.user_id 
     capacity = db.Column(db.Integer, nullable=False)
 
     def json(self):
@@ -124,21 +146,33 @@ class Event(db.Model):
             'capacity': self.capacity
         }
 
+# Create an event
 @app.route('/events', methods=['POST'])
 def create_event():
-    data = request.get_json()
-    new_event = Event(
-        name=data['name'],
-        description=data['description'],
-        start_date=data['start_date'],
-        end_date=data['end_date'],
-        location=data['location'],
-        organizer_id=data['organizer_id'],
-        capacity=data['capacity']
-    )
-    db.session.add(new_event)
-    db.session.commit()
-    return make_response(jsonify({'message': 'Event created'}), 201)
+    try:
+        data = request.get_json()
+        if not all(key in data for key in ('name', 'description', 'start_date', 'end_date', 'location', 'organizer_id', 'capacity')):
+            abort(400, description="Missing required event fields: name, description, start_date, end_date, location, organizer_id, capacity")
+
+        new_event = Event(
+            name=data['name'],
+            description=data['description'],
+            start_date=data['start_date'],
+            end_date=data['end_date'],
+            location=data['location'],
+            organizer_id=data['organizer_id'],
+            capacity=data['capacity']
+        )
+        db.session.add(new_event)
+        db.session.commit()
+        return jsonify(new_event.json()), 201
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+    except KeyError as e:
+        return jsonify(error=f"Missing data for required field: {e}"), 400
+
 
 @app.route('/events', methods=['GET'])
 def get_events():
@@ -150,19 +184,29 @@ def get_event(id):
     event = Event.query.get_or_404(id)
     return jsonify(event.json()), 200
 
-@app.route('/events/<int:id>', methods=['PUT'])
-def update_event(id):
-    event = Event.query.get_or_404(id)
-    data = request.get_json()
-    event.name = data.get('name', event.name)
-    event.description = data.get('description', event.description)
-    event.start_date = data.get('start_date', event.start_date)
-    event.end_date = data.get('end_date', event.end_date)
-    event.location = data.get('location', event.location)
-    event.organizer_id = data.get('organizer_id', event.organizer_id)
-    event.capacity = data.get('capacity', event.capacity)
-    db.session.commit()
-    return jsonify({'message': 'Event updated successfully', 'event': event.json()}), 200
+# Update an event
+@app.route('/events/<int:event_id>', methods=['PUT'])
+def update_event(event_id):
+    try:
+        event = Event.query.get_or_404(event_id)
+        data = request.get_json()
+        # We're assuming all fields are optional in an update
+        # If a field is required to be present in the update, add a similar check as in the POST method
+        event.name = data.get('name', event.name)
+        event.description = data.get('description', event.description)
+        event.start_date = data.get('start_date', event.start_date)
+        event.end_date = data.get('end_date', event.end_date)
+        event.location = data.get('location', event.location)
+        event.organizer_id = data.get('organizer_id', event.organizer_id)
+        event.capacity = data.get('capacity', event.capacity)
+        
+        db.session.commit()
+        return jsonify({'message': 'Event updated successfully', 'event': event.json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+
 
 @app.route('/events/<int:id>', methods=['DELETE'])
 def delete_event(id):
@@ -196,19 +240,26 @@ class Ticket(db.Model):
             'updated_at': str(self.updated_at)
         }
 
-@app.route('/tickets', methods=['POST'])
-def create_ticket():
-    data = request.get_json()
-    ticket = Ticket(
-        description=data['description'],
-        event_id=data['event_id'],
-        ticket_type=data['ticket_type'],
-        quantity=data['quantity'],
-        price=data['price']
-    )
-    db.session.add(ticket)
-    db.session.commit()
-    return jsonify({'message': 'Ticket created successfully', 'ticket': ticket.json()}), 201
+# Update a ticket
+@app.route('/tickets/<int:ticket_id>', methods=['PUT'])
+def update_ticket(ticket_id):
+    try:
+        ticket = Ticket.query.get_or_404(ticket_id)
+        data = request.get_json()
+
+        ticket.description = data.get('description', ticket.description)
+        ticket.event_id = data.get('event_id', ticket.event_id)
+        ticket.ticket_type = data.get('ticket_type', ticket.ticket_type)
+        ticket.quantity = data.get('quantity', ticket.quantity)
+        ticket.price = data.get('price', ticket.price)
+
+        db.session.commit()
+        return jsonify({'message': 'Ticket updated successfully', 'ticket': ticket.json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+
 
 @app.route('/tickets', methods=['GET'])
 def get_tickets():
@@ -264,19 +315,26 @@ class Order(db.Model):
             'updated_at': str(self.updated_at)
         }
 
-@app.route('/orders', methods=['POST'])
-def create_order():
-    data = request.get_json()
-    order = Order(
-        user_id=data['user_id'],
-        event_id=data['event_id'],
-        ticket_id=data['ticket_id'],
-        total_amount=data['total_amount'],
-        status=data['status']
-    )
-    db.session.add(order)
-    db.session.commit()
-    return jsonify({'message': 'Order created successfully', 'order': order.json()}), 201
+# Update an order
+@app.route('/orders/<int:order_id>', methods=['PUT'])
+def update_order(order_id):
+    try:
+        order = Order.query.get_or_404(order_id)
+        data = request.get_json()
+
+        order.user_id = data.get('user_id', order.user_id)
+        order.event_id = data.get('event_id', order.event_id)
+        order.ticket_id = data.get('ticket_id', order.ticket_id)
+        order.total_amount = data.get('total_amount', order.total_amount)
+        order.status = data.get('status', order.status)
+
+        db.session.commit()
+        return jsonify({'message': 'Order updated successfully', 'order': order.json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+
 
 @app.route('/orders', methods=['GET'])
 def get_orders():
@@ -326,16 +384,23 @@ class ExpenseCategory(db.Model):
             'updated_at': str(self.updated_at)
         }
 
-@app.route('/expense-categories', methods=['POST'])
-def create_expense_category():
-    data = request.get_json()
-    expense_category = ExpenseCategory(
-        name=data['name'],
-        description=data['description']
-    )
-    db.session.add(expense_category)
-    db.session.commit()
-    return jsonify({'message': 'Expense category created successfully', 'expense_category': expense_category.json()}), 201
+# Update an expense category
+@app.route('/expense-categories/<int:exp_categ_id>', methods=['PUT'])
+def update_expense_category(exp_categ_id):
+    try:
+        expense_category = ExpenseCategory.query.get_or_404(exp_categ_id)
+        data = request.get_json()
+
+        expense_category.name = data.get('name', expense_category.name)
+        expense_category.description = data.get('description', expense_category.description)
+
+        db.session.commit()
+        return jsonify({'message': 'Expense category updated successfully', 'expense_category': expense_category.json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+
 
 @app.route('/expense-categories', methods=['GET'])
 def get_expense_categories():
@@ -390,20 +455,27 @@ class Expense(db.Model):
             'updated_at': str(self.updated_at)
         }
 
-@app.route('/expenses', methods=['POST'])
-def create_expense():
-    data = request.get_json()
-    expense = Expense(
-        event_id=data['event_id'],
-        category_id=data['category_id'],
-        description=data['description'],
-        amount=data['amount'],
-        paid_at=data.get('paid_at'),  # Optional field
-        receipt_url=data.get('receipt_url')  # Optional field
-    )
-    db.session.add(expense)
-    db.session.commit()
-    return jsonify({'message': 'Expense created successfully', 'expense': expense.json()}), 201
+# Update an expense
+@app.route('/expenses/<int:expense_id>', methods=['PUT'])
+def update_expense(expense_id):
+    try:
+        expense = Expense.query.get_or_404(expense_id)
+        data = request.get_json()
+
+        expense.event_id = data.get('event_id', expense.event_id)
+        expense.category_id = data.get('category_id', expense.category_id)
+        expense.description = data.get('description', expense.description)
+        expense.amount = data.get('amount', expense.amount)
+        expense.paid_at = data.get('paid_at', expense.paid_at)
+        expense.receipt_url = data.get('receipt_url', expense.receipt_url)
+
+        db.session.commit()
+        return jsonify({'message': 'Expense updated successfully', 'expense': expense.json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+
 
 @app.route('/expenses', methods=['GET'])
 def get_expenses():
@@ -460,19 +532,26 @@ class Salary(db.Model):
             'updated_at': str(self.updated_at)
         }
 
-@app.route('/salaries', methods=['POST'])
-def create_salary():
-    data = request.get_json()
-    salary = Salary(
-        event_id=data['event_id'],
-        name=data['name'],
-        hourly_rate=data['hourly_rate'],
-        total_amount=data['total_amount'],
-        paid_at=data.get('paid_at')  # Optional field
-    )
-    db.session.add(salary)
-    db.session.commit()
-    return jsonify({'message': 'Salary created successfully', 'salary': salary.json()}), 201
+# Update a salary
+@app.route('/salaries/<int:salary_id>', methods=['PUT'])
+def update_salary(salary_id):
+    try:
+        salary = Salary.query.get_or_404(salary_id)
+        data = request.get_json()
+
+        salary.event_id = data.get('event_id', salary.event_id)
+        salary.name = data.get('name', salary.name)
+        salary.hourly_rate = data.get('hourly_rate', salary.hourly_rate)
+        salary.total_amount = data.get('total_amount', salary.total_amount)
+        salary.paid_at = data.get('paid_at', salary.paid_at)
+
+        db.session.commit()
+        return jsonify({'message': 'Salary updated successfully', 'salary': salary.json()}), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        return jsonify(error=str(e.__dict__['orig'])), 500
+
 
 @app.route('/salaries', methods=['GET'])
 def get_salaries():
@@ -505,4 +584,4 @@ def delete_salary(id):
 
 
 if __name__ == '__main__': 
-  app.run(host = '0.0.0.0', port = 5000)
+  app.run(host = '0.0.0.0', port = 5000, debug = True)
