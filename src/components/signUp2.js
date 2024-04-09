@@ -67,8 +67,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom' 
 import './SignUp2.css'; 
 import './Login.css'; 
-// dsadds
-function SignUp2() {
+// dsadds 
+function SignUp2() { 
 
   const navigate = useNavigate();
   const [email, setEmail] = useState('');

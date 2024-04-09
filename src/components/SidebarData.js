@@ -28,5 +28,11 @@ export const SidebarData = [
         path: '/dashboard/Settings',
         icon: <IoIcons.IoMdSettings />,
         cName: 'nav-text'
+      }, 
+      {
+        title: 'Payment',
+        path: '/dashboard/Payment',
+        icon: <IoIcons.IoMdSettings />,
+        cName: 'nav-text'
       }
 ]

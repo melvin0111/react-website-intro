@@ -70,15 +70,27 @@
 // export default Orders;
 
 import React from 'react';
-import './Orders2.css'; // Import your CSS file
+import { useNavigate } from 'react-router-dom'
+import './Orders2.css'; 
+import './Payment2' 
 
 const OrdersPage = () => {
   // Sample event data
   const events = [
-    { name: 'Event 1', location: 'Location 1', ticketCost: 50, managerPayment: 100 },
-    { name: 'Event 2', location: 'Location 2', ticketCost: 75, managerPayment: 120 },
+    { name1: 'Event 1', location: 'Location 1', ticketCost: 50, managerPayment: 100 },
+    { name1: 'Event 2', location: 'Location 2', ticketCost: 75, managerPayment: 120 },
     // Add more event data as needed
   ];
+
+  const navigate = useNavigate(''); 
+
+  const handlePayment = (e) => {
+    e.preventDefault();
+    // For now, we're assuming any login attempt is successful
+    console.log("Entering Payment Page...");
+    // Redirect to a specific route on successful login
+    navigate('/Payment2'); 
+  }; 
 
   return (
     <div className="orders-container">
@@ -86,11 +98,14 @@ const OrdersPage = () => {
       {events.map((event, index) => (
         <div className="event-container" key={index}>
           <div className="event-details">
-            <h2>{event.name}</h2>
+            <h2>{event.name1}</h2>
             <div></div>
             <p>Location: {event.location}</p>
             <p>Ticket Cost: ${event.ticketCost}</p>
             <p>Manager Payment: ${event.managerPayment}</p>
+            <button onClick={handlePayment} className="payment-button">
+                Proceed to Payment
+            </button>
           </div>
           <div className="total-expenses">
             <h2>Total Expenses</h2>
