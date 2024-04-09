@@ -119,10 +119,10 @@ function SignUp2() {
           />
         </div> 
         <div className='form-group2'>
-          <label htmlFor='contactInfo'>Contact Info</label>
+          <label htmlFor='contactInfo'>Phone Number</label>
           <input
             type='contactInfo'
-            placeholder='Enter Contact Info'
+            placeholder='Enter Phone Number'
             id='contactInfo'
             value={contactInfo}
             onChange={(e) => setContactInfo(e.target.value)}

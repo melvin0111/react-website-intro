@@ -6,10 +6,6 @@ import Modal from './Modal';
 import { useNavigate } from 'react-router-dom'; 
 import { BsThreeDotsVertical } from 'react-icons/bs';
 
-
-
-
-
 function DashboardSection(){
     const [mockEvents, setMockEvents] = useState([
         { id: 1, name: 'Event One', start_date: '2024-03-27', end_date: '2024-03-28', location: 'Venue A' },
