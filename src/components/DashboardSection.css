@@ -24,6 +24,7 @@
 }
 
 .events-table-container {
+    /* align-items: center; */
     padding: 1rem;
     overflow-x: auto; /* Enables horizontal scrolling if table is too wide */
   }
@@ -34,6 +35,11 @@
     font-size: 100px;
     margin-top: -0x;
   }
+
+  /* .events-table-container button {
+    margin-right: 100px;
+    width: 800px;
+  } */
   
   .events-table {
     width: 100%;

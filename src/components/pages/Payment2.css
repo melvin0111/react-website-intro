@@ -55,7 +55,7 @@
     background-color: #F05538;
   }
   
-  button {
+  .payment-form input button {
     width: 200px;
     margin-left: 420px;
   }
